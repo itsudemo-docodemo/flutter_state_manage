@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_state_notifier/flutter_state_notifier.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:state_manage/main.dart';
 import 'package:state_manage/state/my_home_state.dart';
 import 'package:state_manage/view_model/my_home_view_model.dart';
 
@@ -10,8 +10,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('MyHomePageををビルド');
-    return StateNotifierProvider<MyHomePageStateNotifier, MyHomePageState>(
-      create: (context) => MyHomePageStateNotifier(),
+    return ProviderScope(
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -40,14 +39,14 @@ class WidgetA extends StatelessWidget {
   }
 }
 
-class WidgetB extends StatelessWidget {
+class WidgetB extends ConsumerWidget {
   const WidgetB({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     print('WidgetBをビルド');
     //watchはMyHomePageStateのnotifyListenersで、状態が変化した時だけ再描画
-    final int counter = context.watch<MyHomePageState>().counter;
+    final int counter = ref.watch<MyHomePageState>(myHomePageProvider).counter;
     return Text(
       '$counter',
       style: Theme.of(context).textTheme.headlineMedium,
@@ -55,17 +54,16 @@ class WidgetB extends StatelessWidget {
   }
 }
 
-class WidgetC extends StatelessWidget {
+class WidgetC extends ConsumerWidget {
   const WidgetC({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     print('WidgetCをビルド');
     // readはMyHomePageStateのnotifyListenersで、再描画を行わない
-    // final Function increment =
-    //     context.read<MyHomePageStateNotifier>().reBuild;
-    final Function increment =
-        context.read<MyHomePageStateNotifier>().increment;
+    final Function increment = ref
+        .read<MyHomePageStateNotifier>(myHomePageProvider.notifier)
+        .increment;
     return ElevatedButton(
         onPressed: () {
           increment();

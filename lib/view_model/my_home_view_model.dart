@@ -1,4 +1,4 @@
-import 'package:flutter_state_notifier/flutter_state_notifier.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:state_manage/state/my_home_state.dart';
 
 class MyHomePageStateNotifier extends StateNotifier<MyHomePageState> {
